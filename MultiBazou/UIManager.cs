@@ -30,14 +30,14 @@ namespace MultiBazou
             Singleton = this;
         }
 
-        public void HostClicked()
+        public void HostClicked()   // BUTTON IS MISSING
         {
             NetworkManager.Singleton.StartHost();
         }
 
-        public void JoinClicked()
+        public void JoinClicked()   // BUTTON IS MISSING
         {
-            // UI Button not added yet
+            NetworkManager.Singleton.JoinGame("");  // Get IP from UI Element
         }
 
         public void LeaveClicked()
