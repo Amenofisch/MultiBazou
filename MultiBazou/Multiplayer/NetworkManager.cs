@@ -88,7 +88,7 @@ namespace MultiBazou.Multiplayer
             Client.Connect($"127.0.0.1:{port}");
         }
 
-        internal void JoinGame(string ipString)
+        internal void JoinGame(string ipString, string port)
         {
             Client.Connect($"{ipString}:{port}");
         }

@@ -18,3 +18,6 @@ F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\obj\Debug\MultiBazou.csproj
 F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\obj\Debug\MultiBazou.csproj.CopyComplete
 F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\obj\Debug\MultiBazou.dll
 F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\obj\Debug\MultiBazou.pdb
+F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\bin\Debug\UnityEngine.IMGUIModule.dll
+F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\bin\Debug\UnityEngine.UIElementsModule.dll
+F:\00 - projects\MonBazouCheat\MultiBazou\MultiBazou\bin\Debug\UnityEngine.UIElementsNativeModule.dll

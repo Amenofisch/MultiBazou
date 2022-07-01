@@ -37,7 +37,7 @@ namespace MultiBazou
 
         public void JoinClicked()   // BUTTON IS MISSING
         {
-            NetworkManager.Singleton.JoinGame("");  // Get IP from UI Element
+            NetworkManager.Singleton.JoinGame("","");  // Get IP from UI Element
         }
 
         public void LeaveClicked()
