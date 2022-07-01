@@ -101,21 +101,25 @@ namespace MultiBazou.Multiplayer
 
         private void DidConnect(object sender, EventArgs e)
         {
+            Debug.Log("[NetworkManager] DidConnect called");
             Player.Spawn(Client.Id, UIManager.Singleton.Username, Vector3.zero, true);
         }
 
         private void FailedToConnect(object sender, EventArgs e)
         {
+            Debug.Log("[NetworkManager] FailedToConnect called");
             UIManager.Singleton.BackToMain();
         }
 
         private void PlayerJoined(object sender, ClientConnectedEventArgs e)
         {
+            Debug.Log($"[NetworkManager] PlayerJoined called with id {e.Id}");
             Player.List[Client.Id].SendSpawn(e.Id);
         }
 
         private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
         {
+            Debug.Log($"[NetworkManager] PlayerLeft called with id {e.Id}");
             Destroy(Player.List[e.Id].gameObject);
         }
 
