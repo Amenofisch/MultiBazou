@@ -1,20 +1,114 @@
-﻿using RiptideNetworking;
-using RiptideNetworking.Utils;
-using System;
+﻿using System;
+using System.Linq;
+using RiptideNetworking;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-namespace MultiBazou.Multiplayer
+
+namespace MultiBazou
 {
-    internal enum MessageId : ushort
+    public enum ServerToClientId : ushort
     {
-        spawnPlayer = 1,
-        playerMovement
+        spawnPlayer = 9,
+        playerPosRot
     }
 
-    public class NetworkManager : MonoBehaviour
+    public enum ClientToServerId : ushort
     {
-        private static NetworkManager _singleton;
-        public static NetworkManager Singleton
+        playerName = 1,
+        playerPosRot
+    }
+    
+    public class ClientNetworkManager : MonoBehaviour
+    {
+        private static ClientNetworkManager _singleton;
+        
+        public static ClientNetworkManager Singleton
+        {
+            get => _singleton;
+            private set
+            {
+                if(_singleton == null)
+                {
+                    _singleton = value;
+                } else if (_singleton != value)
+                {
+                    UnityEngine.Debug.Log("ClientNetworkManager instance already exists, destroying...");
+                    Destroy(value);
+                }
+            }
+            
+        }
+
+        public string ip;
+        public ushort port;
+        public string name;
+
+        public Client Client { get; set; }
+
+        public void Awake()
+        {
+            Singleton = this;
+        }
+
+        private void Start()
+        {
+            Client = new Client();
+
+            Client.Connected += DidConnect;
+            Client.ConnectionFailed += FailedToConnect;
+            Client.ClientDisconnected += PlayerLeft;
+            Client.Disconnected += DidDisconnect;
+        }
+
+        private void FixedUpdate()
+        {
+            Client.Tick();
+        }
+
+        private void OnApplicationQuit()
+        {
+            Client.Disconnect();
+
+            Client.Connected -= DidConnect;
+            Client.ConnectionFailed -= FailedToConnect;
+            Client.ClientDisconnected -= PlayerLeft;
+            Client.Disconnected -= DidDisconnect;
+        }
+
+        public void Connect()
+        {
+            Client.Connect(ip, (byte)port);
+        }
+
+        private void DidConnect(object sender, EventArgs e)
+        {
+            Message name = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.playerName);
+            name.Add(this.name);
+            Client.Send(name);
+        }
+
+        private void FailedToConnect(object sender, EventArgs e)
+        {
+            UnityEngine.Debug.Log("Failed to connect");
+        }
+
+        private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
+        {
+            ClientPlayerManager.List[e.Id].RemovePlayer();
+        }
+
+        private void DidDisconnect(object sender, EventArgs e)
+        {
+            UnityEngine.Debug.Log("Disconnected");
+            ClientPlayerManager.List.Clear();
+        }
+    }
+    public class ServerNetworkManager : MonoBehaviour
+    {
+        private static ServerNetworkManager _singleton;
+
+        public static ServerNetworkManager Singleton
         {
             get => _singleton;
             private set
@@ -23,23 +117,15 @@ namespace MultiBazou.Multiplayer
                     _singleton = value;
                 else if (_singleton != value)
                 {
-                    Debug.Log($"{nameof(NetworkManager)} instance already exists, destroying object!");
+                    UnityEngine.Debug.Log("ServerNetworkManager instance already exists, destroying...");
                     Destroy(value);
                 }
             }
         }
 
-        private ushort port = 7777;
-        private ushort maxPlayers = 4;
-        [Header("Prefabs")]
-        private GameObject playerPrefab = Singleton<Gameplay>.i.PlayerWalking.gameObject;
-        private GameObject localPlayerPrefab = Singleton<Gameplay>.i.PlayerWalking.gameObject;
+        public ushort port;
 
-        public GameObject PlayerPrefab => playerPrefab;
-        public GameObject LocalPlayerPrefab => localPlayerPrefab;
-
-        internal Server Server { get; private set; }
-        internal Client Client { get; private set; }
+        public Server Server { get; private set; }
 
         private void Awake()
         {
@@ -48,80 +134,41 @@ namespace MultiBazou.Multiplayer
 
         private void Start()
         {
-            RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
+            Server = new Server();
 
-            Server = new Server { AllowAutoMessageRelay = true };
-
-            Client = new Client();
-            Client.Connected += DidConnect;
-            Client.ConnectionFailed += FailedToConnect;
-            Client.ClientConnected += PlayerJoined;
-            Client.ClientDisconnected += PlayerLeft;
-            Client.Disconnected += DidDisconnect;
-        }
-
-        private void DidDisconnect(object sender, EventArgs e)
-        {
-            foreach (Player player in Player.List.Values)
-                Destroy(player.gameObject);
-
-            UIManager.Singleton.BackToMain();
+            Server.ClientConnected += NewPlayerConnected;
+            Server.ClientDisconnected += PlayerLeft;
         }
 
         private void FixedUpdate()
         {
-            if (Server.IsRunning)
-                Server.Tick();
-
-            Client.Tick();
+            Server.Tick();
         }
 
         private void OnApplicationQuit()
         {
             Server.Stop();
-            Client.Disconnect();
+
+            Server.ClientConnected -= NewPlayerConnected;
+            Server.ClientDisconnected -= PlayerLeft;
         }
 
-        internal void StartHost()
+        public void StartServer()
         {
-            Server.Start(port, maxPlayers);
-            Client.Connect($"127.0.0.1:{port}");
+            Server.Start(port, 64);
         }
 
-        internal void JoinGame(string ipString, string port)
+        private void NewPlayerConnected(object sender, ServerClientConnectedEventArgs e)
         {
-            Client.Connect($"{ipString}:{port}");
-        }
-
-        internal void LeaveGame()
-        {
-            Server.Stop();
-            Client.Disconnect();
-        }
-
-        private void DidConnect(object sender, EventArgs e)
-        {
-            Debug.Log("[NetworkManager] DidConnect called");
-            Player.Spawn(Client.Id, UIManager.Singleton.Username, Vector3.zero, true);
-        }
-
-        private void FailedToConnect(object sender, EventArgs e)
-        {
-            Debug.Log("[NetworkManager] FailedToConnect called");
-            UIManager.Singleton.BackToMain();
-        }
-
-        private void PlayerJoined(object sender, ClientConnectedEventArgs e)
-        {
-            Debug.Log($"[NetworkManager] PlayerJoined called with id {e.Id}");
-            Player.List[Client.Id].SendSpawn(e.Id);
+            foreach (var player in ServerPlayerManager.List.Values.Where(player => player.id != e.Client.Id))
+            {
+                player.SendSpawn(e);
+            }
         }
 
         private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
         {
-            Debug.Log($"[NetworkManager] PlayerLeft called with id {e.Id}");
-            Destroy(Player.List[e.Id].gameObject);
+            ServerPlayerManager.List.Remove(e.Id);
         }
-
     }
 }
