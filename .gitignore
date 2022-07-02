@@ -23,7 +23,8 @@
 *.lo
 
 # Shared objects (inc. Windows DLLs)
-*.dll
+MultiBazou.dll
+MultiBazou/bin
 *.so
 *.so.*
 *.dylib
