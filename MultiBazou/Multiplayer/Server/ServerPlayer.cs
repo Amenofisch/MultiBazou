@@ -11,9 +11,7 @@ namespace MultiBazou
 
         public ushort id { get; set; }
         public string username { get; set; }
-
-        public ServerClientConnectedEventArgs serverClient;
-
+        
         public void SendSpawn(ServerClientConnectedEventArgs toClient)
         {
             ServerNetworkManager.Singleton.Server.Send(

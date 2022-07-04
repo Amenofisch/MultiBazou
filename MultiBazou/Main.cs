@@ -20,7 +20,7 @@ namespace MultiBazou
 
         private string ip = "127.0.0.1";
         private string port = "7777";
-        private string name = Environment.MachineName;
+        private string username = Environment.MachineName;
 
         private Rect _window = new Rect(200, 200, 240, 240);
 
@@ -42,7 +42,7 @@ namespace MultiBazou
         
         void FixedUpdate()
         {
-            if(Gameplay.i.PlayerWalking && SceneManager.GetActiveScene().name == "Master" && clientNetworkObject.GetComponent<ClientNetworkManager>().Client.IsConnected)
+            if(SceneManager.GetActiveScene().name == "Master")
             {
                 SendPostionData();
                 print("Sending posdata...");
@@ -59,10 +59,15 @@ namespace MultiBazou
 
         void Update()
         {
+
+            // This is causing "object reference not set to an instance" errors
+
+            /*
             foreach (var player in ClientPlayerManager.List)
             {
                 player.Value.LerpPosition();
             }
+            */
         }
 
         private void OnGUI()
@@ -77,11 +82,11 @@ namespace MultiBazou
         {
             ip = GUILayout.TextField(ip);
             port = GUILayout.TextField(port);
-            name = GUILayout.TextField(name);
+            username = GUILayout.TextField(username);
 
             ClientNetworkManager.Singleton.ip = ip;
             ClientNetworkManager.Singleton.port = ushort.Parse(port);
-            ClientNetworkManager.Singleton.name = name;
+            ClientNetworkManager.Singleton.username = username;
             ServerNetworkManager.Singleton.port = ushort.Parse(port);
 
             if (GUILayout.Button("Connect")) ClientNetworkManager.Singleton.Connect();

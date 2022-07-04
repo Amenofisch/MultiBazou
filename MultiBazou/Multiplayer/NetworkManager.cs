@@ -42,7 +42,7 @@ namespace MultiBazou
 
         public string ip;
         public ushort port;
-        public string name;
+        public string username;
 
         public Client Client { get; set; }
 
@@ -78,14 +78,15 @@ namespace MultiBazou
 
         public void Connect()
         {
-            Client.Connect(ip, (byte)port);
+            Client.Connect(ip + ":" + port);
         }
 
         private void DidConnect(object sender, EventArgs e)
         {
-            Message name = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.playerName);
-            name.Add(this.name);
-            Client.Send(name);
+            UnityEngine.Debug.Log("Connected, sending spawn message...");
+            Message username = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.playerName);
+            username.Add(this.username);
+            Client.Send(username);
         }
 
         private void FailedToConnect(object sender, EventArgs e)
@@ -95,6 +96,7 @@ namespace MultiBazou
 
         private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
         {
+            UnityEngine.Debug.Log("Player left: " + e.Id);
             ClientPlayerManager.List[e.Id].RemovePlayer();
         }
 
@@ -160,6 +162,7 @@ namespace MultiBazou
 
         private void NewPlayerConnected(object sender, ServerClientConnectedEventArgs e)
         {
+            UnityEngine.Debug.Log("New player connected: " + e.Client.Id);
             foreach (var player in ServerPlayerManager.List.Values.Where(player => player.id != e.Client.Id))
             {
                 player.SendSpawn(e);
@@ -168,6 +171,7 @@ namespace MultiBazou
 
         private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
         {
+            UnityEngine.Debug.Log("Player left: " + e.Id);
             ServerPlayerManager.List.Remove(e.Id);
         }
     }

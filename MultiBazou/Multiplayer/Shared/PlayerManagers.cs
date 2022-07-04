@@ -74,12 +74,11 @@ namespace MultiBazou
             return null;
         }
 
-        public static void Spawn(ushort id, string username, ServerClientConnectedEventArgs sClient)
+        public static void Spawn(ushort id, string username)
         {
             ServerPlayer player = new ServerPlayer { username = username, id = id };
 
             player.SendSpawn();
-            player.serverClient = sClient;
             List.Add(player.id, player);
             UnityEngine.Debug.Log("Player " + username + " joined with the id " + id);
         }
