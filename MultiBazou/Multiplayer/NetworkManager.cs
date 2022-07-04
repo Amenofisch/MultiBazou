@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using RiptideNetworking;
+using Riptide;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

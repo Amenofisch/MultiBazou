@@ -1,6 +1,6 @@
 ﻿using BepInEx;
-using RiptideNetworking;
-using RiptideNetworking.Utils;
+using Riptide;
+using Riptide.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;

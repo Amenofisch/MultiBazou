@@ -1,6 +1,6 @@
-﻿using RiptideNetworking;
+﻿using Riptide;
 using UnityEngine;
-using RiptideNetworking.Utils;
+using Riptide.Utils;
 
 namespace MultiBazou
 {

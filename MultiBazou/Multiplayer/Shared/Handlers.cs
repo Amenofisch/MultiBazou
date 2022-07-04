@@ -1,4 +1,4 @@
-﻿using RiptideNetworking;
+﻿using Riptide;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +9,7 @@ namespace MultiBazou
         #region ServerMessages
 
         [MessageHandler((ushort)ClientToServerId.playerName)]
-        public static void PlayerName(ServerClientConnectedEventArgs fromClient, Message message)
+        public static void PlayerName(Riptide.ServerClientConnectedEventArgs fromClient, Message message)
         {
             ServerPlayerManager.Spawn(fromClient.Client.Id, message.GetString(), fromClient);
         }
