@@ -34,10 +34,10 @@ namespace MultiBazou
             RiptideLogger.Initialize(UnityEngine.Debug.Log, true);
 
             clientNetworkObject = Instantiate(clientGameObject, Vector3.zero, Quaternion.identity);
-            clientNetworkObject.AddComponent<ClientNetworkManager>(); // Add ClientNetworkManager Component here
+            clientNetworkObject.AddComponent<ClientNetworkManager>();
 
             serverNetworkObject = Instantiate(serverGameObject, Vector3.zero, Quaternion.identity);
-            serverNetworkObject.AddComponent<ServerNetworkManager>(); // Add ServerNetworkManager Component here
+            serverNetworkObject.AddComponent<ServerNetworkManager>();
         }
         
         void FixedUpdate()
@@ -45,7 +45,6 @@ namespace MultiBazou
             if(SceneManager.GetActiveScene().name == "Master")
             {
                 SendPostionData();
-                print("Sending posdata...");
             }   
         }
 
@@ -59,7 +58,7 @@ namespace MultiBazou
 
         void Update()
         {
-
+          
             // This is causing "object reference not set to an instance" errors
 
             /*
@@ -89,7 +88,13 @@ namespace MultiBazou
             ClientNetworkManager.Singleton.username = username;
             ServerNetworkManager.Singleton.port = ushort.Parse(port);
 
-            if (GUILayout.Button("Connect")) ClientNetworkManager.Singleton.Connect();
+            if (GUILayout.Button("Connect"))
+            {
+                if (ClientNetworkManager.Singleton.Connect())
+                {
+                    Debug.Log("[CLIENT] Connected (custom log)");
+                } 
+            }
 
             if (GUILayout.Button("Create Server")) ServerNetworkManager.Singleton.StartServer();
         }

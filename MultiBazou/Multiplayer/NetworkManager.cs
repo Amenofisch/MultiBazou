@@ -9,7 +9,7 @@ namespace MultiBazou
 {
     public enum ServerToClientId : ushort
     {
-        spawnPlayer = 9,
+        spawnPlayer = 1,
         playerPosRot
     }
 
@@ -51,9 +51,9 @@ namespace MultiBazou
             Singleton = this;
         }
 
-        private void Start()
+        public void Start()
         {
-            Client = new Client();
+            Client = new Client(1000, 1000, 5, "CLIENT");
 
             Client.Connected += DidConnect;
             Client.ConnectionFailed += FailedToConnect;
@@ -61,12 +61,12 @@ namespace MultiBazou
             Client.Disconnected += DidDisconnect;
         }
 
-        private void FixedUpdate()
+        public void FixedUpdate()
         {
             Client.Tick();
         }
 
-        private void OnApplicationQuit()
+        public void OnApplicationQuit()
         {
             Client.Disconnect();
 
@@ -76,9 +76,9 @@ namespace MultiBazou
             Client.Disconnected -= DidDisconnect;
         }
 
-        public void Connect()
+        public bool Connect()
         {
-            Client.Connect(ip + ":" + port);
+            return Client.Connect(ip + ":" + port);
         }
 
         private void DidConnect(object sender, EventArgs e)
@@ -91,7 +91,7 @@ namespace MultiBazou
 
         private void FailedToConnect(object sender, EventArgs e)
         {
-            UnityEngine.Debug.Log("Failed to connect");
+            UnityEngine.Debug.Log("Failed to connect!");
         }
 
         private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
@@ -129,25 +129,25 @@ namespace MultiBazou
 
         public Server Server { get; private set; }
 
-        private void Awake()
+        public void Awake()
         {
             Singleton = this;
         }
 
-        private void Start()
+        public void Start()
         {
-            Server = new Server();
+            Server = new Server(1000, 1000, "SERVER");
 
             Server.ClientConnected += NewPlayerConnected;
             Server.ClientDisconnected += PlayerLeft;
         }
 
-        private void FixedUpdate()
+        public void FixedUpdate()
         {
             Server.Tick();
         }
 
-        private void OnApplicationQuit()
+        public void OnApplicationQuit()
         {
             Server.Stop();
 
