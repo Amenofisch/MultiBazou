@@ -4,7 +4,12 @@
 
 **Currently not working**
 
-**Missing stuff:**
-- No buttons to connect to server
+**Missing/Broken Stuff:**
+- Client.Tick() and Server.Tick() in NetworkManager.cs doesn't get called
 - Syncing of vehicles
 - Syncing of Item in Hand
+
+## Dependencies
+
+- RiptideNetworking (compiled using .NET Framework)
+- BepInEx 5
