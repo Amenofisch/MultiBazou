@@ -1,6 +1,7 @@
 # MultiBazou
  Multiplayer Mod for Mon Bazou
 
+[![CodeQL](https://github.com/Amenofisch/MultiBazou/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Amenofisch/MultiBazou/actions/workflows/codeql-analysis.yml)
 
 **Currently not working**
 
