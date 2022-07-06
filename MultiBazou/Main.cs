@@ -38,6 +38,9 @@ namespace MultiBazou
 
             serverNetworkObject = Instantiate(serverGameObject, Vector3.zero, Quaternion.identity);
             serverNetworkObject.AddComponent<ServerNetworkManager>();
+
+            DontDestroyOnLoad(clientNetworkObject);
+            DontDestroyOnLoad(serverNetworkObject);
         }
         
         void FixedUpdate()

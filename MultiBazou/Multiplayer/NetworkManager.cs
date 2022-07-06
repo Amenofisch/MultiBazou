@@ -9,14 +9,15 @@ namespace MultiBazou
 {
     public enum ServerToClientId : ushort
     {
-        spawnPlayer = 1,
-        playerPosRot
+        playerName = 1,
+        spawnPlayer = 9,
+        playerPosRot = 3
     }
 
     public enum ClientToServerId : ushort
     {
         playerName = 1,
-        playerPosRot
+        playerPosRot = 3
     }
     
     public class ClientNetworkManager : MonoBehaviour

@@ -39,7 +39,7 @@ namespace MultiBazou
             this.rotation = rotation;
             SendPosRot(position, rotation, id);
         }
-
+        
         public Message GetSpawnData(Message message)
         {
             message.Add(id);
