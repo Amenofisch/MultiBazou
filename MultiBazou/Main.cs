@@ -39,7 +39,9 @@ namespace MultiBazou
             serverNetworkObject = Instantiate(serverGameObject, Vector3.zero, Quaternion.identity);
             serverNetworkObject.AddComponent<ServerNetworkManager>();
 
-            DontDestroyOnLoad(clientNetworkObject);
+            // DontDestroyOnLoad is needed because of these GameObjects being created in the MainMenu scene and thus unloading once switched to the Master scene
+            
+            DontDestroyOnLoad(clientNetworkObject); 
             DontDestroyOnLoad(serverNetworkObject);
         }
         
@@ -61,15 +63,10 @@ namespace MultiBazou
 
         void Update()
         {
-          
-            // This is causing "object reference not set to an instance" errors
-
-            /*
             foreach (var player in ClientPlayerManager.List)
             {
                 player.Value.LerpPosition();
             }
-            */
         }
 
         private void OnGUI()

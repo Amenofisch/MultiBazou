@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Riptide;
+using Riptide.Transports.Rudp;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -88,6 +89,7 @@ namespace MultiBazou
             Message username = Message.Create(MessageSendMode.reliable, (ushort)ClientToServerId.playerName);
             username.Add(this.username);
             Client.Send(username);
+            UnityEngine.Debug.Log("Spawn message sent..");
         }
 
         private void FailedToConnect(object sender, EventArgs e)
@@ -138,7 +140,7 @@ namespace MultiBazou
         public void Start()
         {
             Server = new Server(1000, 1000, "SERVER");
-
+            Server.AllowAutoMessageRelay = true;
             Server.ClientConnected += NewPlayerConnected;
             Server.ClientDisconnected += PlayerLeft;
         }

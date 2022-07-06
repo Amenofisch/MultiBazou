@@ -24,6 +24,8 @@ namespace MultiBazou
             if (id == ClientNetworkManager.Singleton.Client.Id)
                 return;
 
+            UnityEngine.Debug.Log("Spawning Player with ID: " + id + " and username: " + username + " at: " + position.ToString());
+
             ClientPlayer player = new ClientPlayer
             {
                 username = username,
@@ -80,7 +82,7 @@ namespace MultiBazou
 
             player.SendSpawn();
             List.Add(player.id, player);
-            UnityEngine.Debug.Log("Player " + username + " joined with the id " + id);
+            UnityEngine.Debug.Log("Player " + username + " spawning with the id " + id);
         }
     }
 }
