@@ -31,7 +31,7 @@ namespace MultiBazou
 
         void Start()
         {
-            RiptideLogger.Initialize(UnityEngine.Debug.Log, true);
+            RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, true); // debug, info, warning, error, timestamps
 
             clientNetworkObject = Instantiate(clientGameObject, Vector3.zero, Quaternion.identity);
             clientNetworkObject.AddComponent<ClientNetworkManager>();
@@ -99,10 +99,10 @@ namespace MultiBazou
             if (GUILayout.Button("Create Server")) ServerNetworkManager.Singleton.StartServer();
         }
 
-        public GameObject SpawnObject(GameObject obj, bool destroyOnLoad = false)
+        public GameObject SpawnObject(GameObject obj, bool dontDestroyOnLoad = false)
         {
             var go = Instantiate(obj);
-            if (!destroyOnLoad) DontDestroyOnLoad(go);
+            if (dontDestroyOnLoad) DontDestroyOnLoad(go);
             return go;
         }
 

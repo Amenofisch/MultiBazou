@@ -8,17 +8,6 @@ namespace MultiBazou
     {
         public static Dictionary<ushort, ClientPlayer> List = new Dictionary<ushort, ClientPlayer>();
 
-        public static ClientPlayer FindPlayerByName(string name)
-        {
-            foreach (var player in List)
-            {
-                if (player.Value.username.Equals(name))
-                    return player.Value;
-            }
-
-            return null;
-        }
-
         public static void Spawn(ushort id, string username, Vector3 position)
         {
             if (id == ClientNetworkManager.Singleton.Client.Id)
@@ -56,7 +45,7 @@ namespace MultiBazou
             glasses.transform.localPosition = new Vector3(0, 0.65f, 0.22f);
             glasses.transform.localScale = new Vector3(0.8f, 0.2f, 0.8f);
 
-            List.Add(id, player);
+            List.Add(player.id, player);
         }
 
     }
@@ -64,18 +53,7 @@ namespace MultiBazou
     public class ServerPlayerManager
     {
         public static Dictionary<ushort, ServerPlayer> List { get; set; } = new Dictionary<ushort, ServerPlayer>();
-
-        public static ServerPlayer FindPlayerByName(string name)
-        {
-            foreach (var player in List)
-            {
-                if (player.Value.username.Equals(name))
-                    return player.Value;
-            }
-
-            return null;
-        }
-
+        
         public static void Spawn(ushort id, string username)
         {
             ServerPlayer player = new ServerPlayer { username = username, id = id };

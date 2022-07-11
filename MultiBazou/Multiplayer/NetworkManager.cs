@@ -12,7 +12,7 @@ namespace MultiBazou
     {
         playerName = 1,
         spawnPlayer = 9,
-        playerPosRot = 3
+        playerPosRot = 3 
     }
 
     public enum ClientToServerId : ushort
