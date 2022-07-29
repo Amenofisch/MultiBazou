@@ -80,6 +80,10 @@ namespace MultiBazou
 
         public bool Connect()
         {
+            if(Client.IsConnected)
+            {
+                return false;
+            }
             return Client.Connect(ip + ":" + port);
         }
 
@@ -160,6 +164,10 @@ namespace MultiBazou
 
         public void StartServer()
         {
+            if(Server.IsRunning)
+            {
+                return;
+            }
             Server.Start(port, 64);
         }
 

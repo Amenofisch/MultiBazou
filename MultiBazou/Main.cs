@@ -55,7 +55,7 @@ namespace MultiBazou
 
         private void SendPostionData()
         {
-            var message = Message.Create(MessageSendMode.unreliable, (ushort)ClientToServerId.playerPosRot);
+            Message message = Message.Create(MessageSendMode.unreliable, (ushort)ClientToServerId.playerPosRot);
             message.Add(Gameplay.i.PlayerWalking.transform.position);
             message.Add(Gameplay.i.PlayerWalking.transform.rotation);
             ClientNetworkManager.Singleton.Client.Send(message);
@@ -93,7 +93,11 @@ namespace MultiBazou
                 if (ClientNetworkManager.Singleton.Connect())
                 {
                     Debug.Log("[CLIENT] Connected (custom log)");
-                } 
+                }
+                else
+                {
+                    Debug.Log("[CLIENT] Error while Connecting (you're already connected or actual error)");
+                }
             }
 
             if (GUILayout.Button("Create Server")) ServerNetworkManager.Singleton.StartServer();

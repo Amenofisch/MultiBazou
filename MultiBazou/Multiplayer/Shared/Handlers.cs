@@ -20,7 +20,7 @@ namespace MultiBazou
         [MessageHandler((ushort)ClientToServerId.playerName)]
         public static void PlayerName(ushort ClientId, Message message)
         {
-            var username = message.GetString();
+            string username = message.GetString();
             Handlers.LogMessage("[ClientToServerId (SERVER)] Received Spawn request with id: " + ClientId.ToString() + " username: " + username);
             ServerPlayerManager.Spawn(ClientId, username);
         }
@@ -42,7 +42,7 @@ namespace MultiBazou
         [MessageHandler((ushort)ServerToClientId.spawnPlayer)]
         public static void SpawnPlayer(Message message)
         {
-            var id = message.GetUShort();
+            ushort id = message.GetUShort();
             ClientPlayerManager.Spawn(id, message.GetString(), message.GetVector3());
             Handlers.LogMessage("[ServerToClientId (CLIENT)] Received SpawnPlayer with id: " + id.ToString());
         }
@@ -50,7 +50,7 @@ namespace MultiBazou
         [MessageHandler((ushort)ServerToClientId.playerPosRot)]
         public static void PlayerPosRot(Message message)
         {
-            var playerId = message.GetUShort();
+            ushort playerId = message.GetUShort();
             Handlers.LogMessage("[ServerToClientId (CLIENT)] Received PlayerPosRot from id: " + playerId.ToString());
             if (ClientPlayerManager.List.TryGetValue(playerId, out var player))
                 player.Move(message.GetVector3(), message.GetQuaternion());

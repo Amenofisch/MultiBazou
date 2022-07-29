@@ -26,7 +26,7 @@ namespace MultiBazou
             player.playerObject.name = username;
             player.playerObject.layer = 10;
 
-            var usernameText = Main.instance.SpawnObject(new GameObject("Text"));
+            GameObject usernameText = Main.instance.SpawnObject(new GameObject("Text"));
 
             usernameText.AddComponent<TextMesh>();
             usernameText.GetComponent<TextMesh>().text = username;
@@ -59,7 +59,7 @@ namespace MultiBazou
             ServerPlayer player = new ServerPlayer { username = username, id = id };
 
             player.SendSpawn();
-            List.Add(player.id, player);
+            List.Add((ushort)player.id, player);
             UnityEngine.Debug.Log("Player " + username + " spawning with the id " + id);
         }
     }
