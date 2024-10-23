@@ -1,17 +1,17 @@
-# MultiBazou
+# MultiBazou (WIP)
  Multiplayer Mod for Mon Bazou
 
-[![CodeQL](https://github.com/Amenofisch/MultiBazou/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Amenofisch/MultiBazou/actions/workflows/codeql-analysis.yml)
 
-**Currently not working**
+**Currently semi-working**
+
+**Working Stuff:**  
+- Establishing connection between two players
+- Spawning players into world
+- Syncing location of players
 
 **Missing/Broken Stuff:**
-- Player can't be found in ServerPlayerManager List
-- Syncing of vehicles
-- Syncing of Item in Hand
+- Basically everything (item sync, vehicle sync, save sync, NPC sync, ...)
+- Syncing rotation of players
 
 ## Dependencies
-
-- RiptideNetworking (compiled using .NET Framework)
 - BepInEx 5
-    
