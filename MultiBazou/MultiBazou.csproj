@@ -33,86 +33,340 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ClientSide\Client.cs" />
+    <Compile Include="ClientSide\Data\ClientData.cs" />
+    <Compile Include="ClientSide\Data\ContentManager.cs" />
+    <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\ModCharacterController.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Movement.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
+    <Compile Include="ClientSide\Handle\ClientHandle.cs" />
+    <Compile Include="ClientSide\Handle\ClientSend.cs" />
+    <Compile Include="ClientSide\Transport\ClientTcp.cs" />
+    <Compile Include="ClientSide\Transport\ClientUDP.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="PluginInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerSide\Data\ServerData.cs" />
+    <Compile Include="ServerSide\Handle\ServerHandle.cs" />
+    <Compile Include="ServerSide\Handle\ServerSend.cs" />
+    <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\ServerClient.cs" />
+    <Compile Include="ServerSide\Transport\ServerTCP.cs" />
+    <Compile Include="ServerSide\Transport\ServerUDP.cs" />
+    <Compile Include="Shared\Data\GameScene.cs" />
+    <Compile Include="Shared\Data\ModGameSaveData.cs" />
+    <Compile Include="Shared\ModSceneManager.cs" />
+    <Compile Include="Shared\ModUI.cs" />
+    <Compile Include="Shared\Packet.cs" />
+    <Compile Include="Shared\PacketTypes.cs" />
+    <Compile Include="Shared\Player.cs" />
+    <Compile Include="Shared\PreferencesManager.cs" />
+    <Compile Include="Shared\SavesManager.cs" />
+    <Compile Include="Shared\SceneNames.cs" />
+    <Compile Include="ThreadManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>Libs\0Harmony.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>Libs\Assembly-CSharp_publicized.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="Barmetler.RoadSystem.Runtime">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Barmetler.RoadSystem.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>Libs\BepInEx.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="RiptideNetworkingFramework">
-      <HintPath>Libs\RiptideNetworkingFramework.dll</HintPath>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+    </Reference>
+    <Reference Include="DelaunayER">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\DelaunayER.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyRoads3Dv3">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\EasyRoads3Dv3.dll</HintPath>
+    </Reference>
+    <Reference Include="HSVPicker">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\HSVPicker.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="NavMeshComponents">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\NavMeshComponents.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RoadArchitect">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\RoadArchitect.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Tilemap.Extras">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.2D.Tilemap.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Burst.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Burst.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Mdb">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Burst.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Pdb">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Burst.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Cecil.Rocks">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Burst.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.InputSystem">
-      <HintPath>Libs\Unity.InputSystem.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.InputSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InternalAPIEngineBridge.013">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.InternalAPIEngineBridge.013.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Localization">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Localization.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
-      <HintPath>Libs\Unity.Mathematics.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.ResourceManager.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.ScriptableBuildPipeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>Libs\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>Libs\UnityEngine.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AccessibilityModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ARModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ARModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterInputModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CrashReportingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DirectorModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DSPGraphModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GameCenterModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GIModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.GIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GridModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HotReloadModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputModule">
-      <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.LocalizationModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.NVIDIAModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.NVIDIAModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ProfilerModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ProfilerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.StreamingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubstanceModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubsystemsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.SubsystemsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextCoreFontEngineModule">
-      <HintPath>Libs\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextCoreTextEngineModule">
-      <HintPath>Libs\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TilemapModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TLSModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>Libs\UnityEngine.UI.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsNativeModule">
-      <HintPath>Libs\UnityEngine.UIElementsNativeModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UIElementsNativeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>Libs\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UmbraModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityConnectModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityCurlModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityCurlModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityTestProtocolModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VehiclesModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VFXModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.VFXModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VideoModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VirtualTexturingModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.VirtualTexturingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.WindModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>E:\SteamLibrary\steamapps\common\MonBazou\Mon Bazou_Data\Managed\UnityEngine.XRModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
-    <Compile Include="Multiplayer\Client\ClientPlayer.cs" />
-    <Compile Include="Multiplayer\MessageExtensions.cs" />
-    <Compile Include="Multiplayer\NetworkManager.cs" />
-    <Compile Include="Multiplayer\Server\ServerPlayer.cs" />
-    <Compile Include="Multiplayer\Shared\Handlers.cs" />
-    <Compile Include="Multiplayer\Shared\PlayerManagers.cs" />
-    <Compile Include="PluginInfo.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include=".gitignore" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
