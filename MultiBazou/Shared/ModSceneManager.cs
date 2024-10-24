@@ -11,7 +11,7 @@ namespace MultiBazou.Shared
         public static GameScene GetCurrentScene()
         {
             if (IsInGame())
-                return GameScene.Ingame;
+                return GameScene.InGame;
             if (IsInMenu())
                 return GameScene.Menu;
             
@@ -30,7 +30,7 @@ namespace MultiBazou.Shared
                 return IsInGame();
             }
 
-            return player.scene == GameScene.Ingame;
+            return player.scene == GameScene.InGame;
         }
 
         public static bool IsInMenu()

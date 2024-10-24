@@ -6,7 +6,7 @@ namespace MultiBazou.ClientSide.Transport
 {
     public class ClientTcp
     {
-        public TcpClient Socket = new TcpClient();
+        public TcpClient Socket = new();
 
         private NetworkStream _stream;
         private Packet _receivedData;
@@ -100,13 +100,12 @@ namespace MultiBazou.ClientSide.Transport
                 var packetBytes = _receivedData.ReadBytes(packetLength);
                 ThreadManager.ExecuteOnMainThread<Exception>(ex =>
                 {
-                    using (var packet = new Packet(packetBytes))
+                    using var packet = new Packet(packetBytes);
+                    
+                    var packetId = packet.ReadInt();
+                    if (Client.packetHandlers.ContainsKey(packetId))
                     {
-                        var packetId = packet.ReadInt();
-                        if (Client.packetHandlers.ContainsKey(packetId))
-                        {
-                            Client.packetHandlers[packetId](packet);
-                        }
+                        Client.packetHandlers[packetId](packet);
                     }
                 },  null);
                 

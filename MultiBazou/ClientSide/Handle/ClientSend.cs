@@ -37,23 +37,19 @@ namespace MultiBazou.ClientSide.Handle
 
         public static void SendReadyState(bool b, int number)
         {
-            using (var packet = new Packet((int)PacketTypes.ReadyState))
-            {
-                packet.Write(b);
-                packet.Write(number);
+            using var packet = new Packet((int)PacketTypes.ReadyState);
+            packet.Write(b);
+            packet.Write(number);
                     
-                SendTcpData(packet);
-            }
+            SendTcpData(packet);
         }
             
         public static void Disconnect(int id)
         {
-            using (var packet = new Packet((int)PacketTypes.Disconnect))
-            {
-                packet.Write(id);
+            using var packet = new Packet((int)PacketTypes.Disconnect);
+            packet.Write(id);
                     
-                SendTcpData(packet);
-            }
+            SendTcpData(packet);
         }
         #endregion
 

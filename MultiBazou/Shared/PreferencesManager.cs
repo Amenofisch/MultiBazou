@@ -18,11 +18,11 @@ namespace MultiBazou.Shared
     {
         if (File.Exists(PreferencesFilePath))
         {
-            string serializedPreferences = File.ReadAllText(PreferencesFilePath);
+            var serializedPreferences = File.ReadAllText(PreferencesFilePath);
 
             if (serializedPreferences.Length > 0)
             {
-                Preferences preferences = JsonConvert.DeserializeObject<Preferences>(serializedPreferences);
+                var preferences = JsonConvert.DeserializeObject<Preferences>(serializedPreferences);
 
                 if (preferences != null)
                 {
@@ -43,13 +43,13 @@ namespace MultiBazou.Shared
 
     public static void SavePreferences()
     {
-        Preferences preferences = new Preferences
+        var preferences = new Preferences
         {
             IpAddress = Client.instance.ip,
             Username = Client.instance.username
         };
 
-        string serializedPreferences = JsonConvert.SerializeObject(preferences);
+        var serializedPreferences = JsonConvert.SerializeObject(preferences);
         if (!Directory.Exists(ModFolderPath))
         {
             Directory.CreateDirectory(ModFolderPath);

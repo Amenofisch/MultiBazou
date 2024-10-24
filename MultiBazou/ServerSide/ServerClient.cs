@@ -10,8 +10,6 @@ namespace MultiBazou.ServerSide
     public class ServerClient
     {
         public int ID;
-        public bool IsHosting = false;
-        public bool Alive = true;
         
         public ServerTcp ServerTcp;
         public ServerUDP ServerUdp;
@@ -22,8 +20,7 @@ namespace MultiBazou.ServerSide
             ServerTcp = new ServerTcp(ID);
             ServerUdp = new ServerUDP(ID);
         }
-
-
+        
         public void UpdatePlayerDictionary(string playerName)
         {
             ServerData.Players[ID] = new Player(ID, playerName, new Vector3(0, 0, 0));

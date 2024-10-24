@@ -20,7 +20,6 @@ namespace MultiBazou.Shared
         private GUIStyle label_S, text_S, button_S, textField_S;
         
         private float buttonHeight = 20f;
-        private Vector2 scrollPosition = Vector2.zero;
         
         private Rect mRect = new Rect(Screen.width / 2.5f, Screen.height / 3.5f, 315, 280);
         

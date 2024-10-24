@@ -16,7 +16,7 @@ namespace MultiBazou
     [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
     public class Plugin : BaseUnityPlugin
     {
-        public ConfigEntry<string> ConfigModUiToggle;
+        private ConfigEntry<string> ConfigModUiToggle;
         public const int MaxPlayer = 2;
         public const int Port = 7777;
 
@@ -26,12 +26,10 @@ namespace MultiBazou
         public GameObject multiplayerGameObject;
 
         public bool isModInitialized;
-        public static Plugin instance;
         public static ManualLogSource log;
 
         void Awake()
         {
-            instance = this;
             log = Logger;
             ConfigModUiToggle = Config.Bind(new ConfigDefinition("General", "modUiKey"), "End",
                 new ConfigDescription("This buttons opens the menu for the multiplayer mod."));

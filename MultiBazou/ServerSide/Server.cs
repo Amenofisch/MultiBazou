@@ -16,7 +16,7 @@ namespace MultiBazou.ServerSide
     {
         private static int MaxPlayers { get; set; }
         private static int Port { get; set; }
-        public static readonly Dictionary<int, ServerClient> Clients = new Dictionary<int, ServerClient>();
+        public static readonly Dictionary<int, ServerClient> Clients = new();
 
         public delegate void PacketHandler(int fromClient, Packet packet);
 
@@ -114,23 +114,22 @@ namespace MultiBazou.ServerSide
                     return;
 
 
-                using (var packet = new Packet(data))
+                using var packet = new Packet(data);
+                var clientId = packet.ReadInt();
+                
+                if (clientId == 0)
+                    return;
+
+                if (Clients[clientId].ServerUdp.EndPoint == null)
                 {
-                    var clientId = packet.ReadInt();
-                    if (clientId == 0)
-                        return;
-
-                    if (Clients[clientId].ServerUdp.EndPoint == null)
-                    {
-                        Clients[clientId].ServerUdp.Connect(receivedIP);
-                        return;
-                    }
+                    Clients[clientId].ServerUdp.Connect(receivedIP);
+                    return;
+                }
 
 
-                    if (Clients[clientId].ServerUdp.EndPoint.ToString() == receivedIP.ToString())
-                    {
-                        Clients[clientId].ServerUdp.HandleData(packet);
-                    }
+                if (Clients[clientId].ServerUdp.EndPoint.ToString() == receivedIP.ToString())
+                {
+                    Clients[clientId].ServerUdp.HandleData(packet);
                 }
             }
             catch (Exception ex)
@@ -156,7 +155,7 @@ namespace MultiBazou.ServerSide
 
         private static void InitializeServerData()
         {
-            for (int i = 1; i <= MaxPlayers; i++)
+            for (var i = 1; i <= MaxPlayers; i++)
             {
                 Clients.Add(i, new ServerClient(i));
             }

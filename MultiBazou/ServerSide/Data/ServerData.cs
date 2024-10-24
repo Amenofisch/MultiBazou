@@ -5,7 +5,7 @@ namespace MultiBazou.ServerSide.Data
 {
     public static class ServerData
     {
-        public static readonly Dictionary<int, Player> Players = new Dictionary<int, Player>(); 
+        public static readonly Dictionary<int, Player> Players = new(); 
         public static bool isRunning;
 
         public static void ResetData()

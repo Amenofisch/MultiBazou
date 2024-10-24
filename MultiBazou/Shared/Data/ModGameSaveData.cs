@@ -27,13 +27,14 @@ namespace MultiBazou.Shared.Data
 
         public GameSaveData ToGame()
         {
-            GameSaveData profileData = new GameSaveData(this.TimeStamp);
+            var profileData = new GameSaveData(TimeStamp)
+            {
+                SaveName = SaveName,
+                GameVersion = GameVersion,
+                isPermadeath = isPermaDeath,
+                isHardMode = isHardMode
+            };
 
-            profileData.SaveName = this.SaveName;
-            profileData.GameVersion = this.GameVersion;
-            profileData.isPermadeath = this.isPermaDeath;
-            profileData.isHardMode = this.isHardMode;
-            
             return profileData;
         }
     }

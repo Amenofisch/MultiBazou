@@ -154,46 +154,42 @@ namespace MultiBazou.ServerSide.Handle
         
             public static void SendInitialPosition(int fromClient, Vector3Serializable position)
             {
-                using (var packet = new Packet((int)PacketTypes.PlayerInitialPos))
-                {
-                    packet.Write(fromClient);
-                    packet.Write(position);
+                using var packet = new Packet((int)PacketTypes.PlayerInitialPos);
+                
+                packet.Write(fromClient);
+                packet.Write(position);
                     
-                    SendUDPDataToAll(fromClient, packet);
-                }
+                SendUDPDataToAll(fromClient, packet);
             }
         
             public static void SendPosition(int fromClient, Vector3Serializable position)
             {
-                using (var packet = new Packet((int)PacketTypes.PlayerPosition))
-                {
-                    packet.Write(fromClient);
-                    packet.Write(position);
+                using var packet = new Packet((int)PacketTypes.PlayerPosition);
+                
+                packet.Write(fromClient);
+                packet.Write(position);
                     
-                    SendUDPDataToAll(fromClient, packet);
-                }
+                SendUDPDataToAll(fromClient, packet);
             }
                 
             public static void SendRotation(int fromClient, QuaternionSerializable rotation)
             {
-                using (var packet = new Packet((int)PacketTypes.PlayerRotation))
-                {
-                    packet.Write(fromClient);
-                    packet.Write(rotation);
+                using var packet = new Packet((int)PacketTypes.PlayerRotation);
+                
+                packet.Write(fromClient);
+                packet.Write(rotation);
 
-                    SendUDPDataToAll(fromClient, packet);
-                }
+                SendUDPDataToAll(fromClient, packet);
             }
                 
             public static void SendPlayerSceneChange(int fromClient, GameScene scene)
             {
-                using (var packet = new Packet((int)PacketTypes.PlayerSceneChange))
-                {
-                    packet.Write(fromClient);
-                    packet.Write(scene);
+                using var packet = new Packet((int)PacketTypes.PlayerSceneChange);
+                
+                packet.Write(fromClient);
+                packet.Write(scene);
 
-                    SendTcpDataToAll(fromClient, packet);
-                }
+                SendTcpDataToAll(fromClient, packet);
             }
         #endregion
     }

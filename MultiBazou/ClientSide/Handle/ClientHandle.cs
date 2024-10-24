@@ -15,8 +15,8 @@ namespace MultiBazou.ClientSide.Handle
 
         public static void Welcome(Packet packet)
         {
-            string msg = packet.ReadString();
-            int myId = packet.ReadInt();
+            var msg = packet.ReadString();
+            var myId = packet.ReadInt();
             
             Client.instance.Id = myId;
 
@@ -26,8 +26,8 @@ namespace MultiBazou.ClientSide.Handle
 
         public static void Disconnect(Packet packet)
         {
-            string msg = packet.ReadString();
-            int id = packet.ReadInt();
+            var msg = packet.ReadString();
+            var id = packet.ReadInt();
 
             if (!Client.instance.isConnected) return;
 
@@ -144,8 +144,8 @@ namespace MultiBazou.ClientSide.Handle
 
         public static void PlayerRotation(Packet packet)
         {
-            int id = packet.ReadInt();
-            QuaternionSerializable rotation = packet.Read<QuaternionSerializable>();
+            var id = packet.ReadInt();
+            var rotation = packet.Read<QuaternionSerializable>();
             Rotation.UpdatePlayerRotation(id, rotation);
             packet.Dispose();
         }

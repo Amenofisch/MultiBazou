@@ -21,6 +21,7 @@ namespace MultiBazou.ServerSide.Handle
                 var modVersion = packet.ReadString();
                 var gameVersion = packet.ReadFloat();
 
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (gameVersion != ContentManager.instance.GameVersion)
                 {
                     Plugin.log.LogInfo($"[ServerSide/Handle/ServerHandle/WelcomeReceived]: Player {clientId}/{username} tried to connect with incorrect game version.");
