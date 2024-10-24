@@ -13,34 +13,20 @@ namespace MultiBazou.ClientSide.Data.PlayerData
         {
             if (!ClientData.instance.Players.TryGetValue(id, out var player)) return;
             if (player.scene != ModSceneManager.GetCurrentScene()) return;
-            if (ClientData.instance.PlayersGameObjects.TryGetValue(id, out var gameObject))
+            if (player.GameObject != null)
             {
-                if (gameObject != null)
-                {
-                            
-                    gameObject.GetComponent<ModCharacterController>().RotateToRotation(rotation.toQuaternion());
-                    /*_gameObject.transform.rotation = 
-                                Quaternion.Lerp(_gameObject.transform.rotation,_rotation.toQuaternion(), 10f * Time.deltaTime);*/
-                }
-            }
-            else
-            {
-                ClientData.instance.SpawnPlayer(player);
+                player.GameObject.GetComponent<ModCharacterController>().RotateToRotation(rotation.ToQuaternion());
             }
         }
         
         public static void SendRotation()
         {
-            if (GameData.instance.LocalPlayer != null)
+            if (GameData.Instance.LocalPlayer != null)
             {
-                Quaternion rotation = GameData.instance.LocalPlayer.transform.rotation;
+                var rotation = GameData.Instance.LocalPlayerCamera.transform.rotation;
                 if (!(Quaternion.Angle(rotation, _lastRotation) > UpdateRate)) return;
                 _lastRotation = rotation;
                 ClientSend.SendRotation(new QuaternionSerializable(rotation));
-            }
-            else
-            {
-                GameData.instance.LocalPlayer = Object.FindObjectOfType<Gameplay>().PlayerWalking.gameObject;
             }
         }
     }

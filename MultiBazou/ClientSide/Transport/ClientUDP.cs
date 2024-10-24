@@ -16,13 +16,12 @@ namespace MultiBazou.ClientSide.Transport
             Socket = new UdpClient();
             try
             {
-                Plugin.log.LogInfo("Trying to connect...");
-                EndPoint = new IPEndPoint(IPAddress.Parse(Client.Instance.ip), Client.Instance.port);
+                EndPoint = new IPEndPoint(IPAddress.Parse(Client.instance.ip), Client.instance.port);
                 Socket.Connect(EndPoint);
 
                 Socket.BeginReceive(ReceiveCallback, null);
                 
-                using(Packet packet = new Packet())
+                using(var packet = new Packet())
                 {
                     SendData(packet);
                 }
@@ -30,7 +29,6 @@ namespace MultiBazou.ClientSide.Transport
             catch (Exception e)
             {
                 // TODO: properly handle error
-                Plugin.log.LogInfo("Error while connecting via UDP...");
                 Plugin.log.LogError(e.Message);
             }
         }
@@ -39,11 +37,8 @@ namespace MultiBazou.ClientSide.Transport
         {
             try
             {
-                packet.InsertInt(Client.Instance.Id);
-                if (Socket != null)
-                {
-                    Socket.BeginSend(packet.ToArray(), packet.Length(), null, null);
-                }
+                packet.InsertInt(Client.instance.Id);
+                Socket?.BeginSend(packet.ToArray(), packet.Length(), null, null);
             }
             catch (SocketException ex)
             {
@@ -56,12 +51,11 @@ namespace MultiBazou.ClientSide.Transport
             {
                 try
                 {
-                    IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
-                    byte[] data = Socket.EndReceive(result, ref receivedIP);
+                    var receivedIP = new IPEndPoint(IPAddress.Any, 0);
+                    var data = Socket.EndReceive(result, ref receivedIP);
 
                     if (data.Length < 4)
                     {
-                        Plugin.log.LogInfo("UDP Data invalid");
                         return;
                     }
                     
@@ -71,12 +65,11 @@ namespace MultiBazou.ClientSide.Transport
                 catch (SocketException ex)
                 {
                     // TODO: properly handle error
-                    Plugin.log.LogInfo("error while receiving data from server via UDP: " + ex);
                 }
             }
         }
 
-        private void HandleData(byte[] data)
+        private static void HandleData(byte[] data)
         {
             using (var packet = new Packet(data))
             {
@@ -97,7 +90,6 @@ namespace MultiBazou.ClientSide.Transport
                     else
                     {
                         // TODO: properly handle error
-                        Plugin.log.LogInfo($"Packet with id {packetId} not found in packetHandlers dictionary.");
                     }
                 }
             }, null);

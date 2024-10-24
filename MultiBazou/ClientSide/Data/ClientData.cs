@@ -1,14 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Michsky.MUIP;
-using MultiBazou.ClientSide;
 using MultiBazou.ClientSide.Data.PlayerData;
-using MultiBazou.ClientSide.Handle;
 using MultiBazou.Shared;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace MultiBazou.ClientSide.Data
@@ -18,112 +13,83 @@ namespace MultiBazou.ClientSide.Data
         public static ClientData instance;
 
         private static GameObject _playerPrefab;
-        public Dictionary<int, Player> Players = new Dictionary<int, Player>();
-        public readonly Dictionary<int, GameObject> PlayersGameObjects = new Dictionary<int, GameObject>();
-        
-        public bool IsServerAlive = true;
-        public bool NeedToKeepAlive = false;
-        public bool IsKeepingAlive;
-        
+        public Dictionary<int, Player> Players = new();
+
         public bool GameReady;
 
         public IEnumerator Initialize()
         {
             instance = this;
-            
-            PlayersGameObjects.Clear();
-            
-            if (GameData.instance != null) GameData.instance.Initialize();
-            else
+
+            foreach (var player in Players)
             {
-                GameData data = new GameData(); 
-                data.Initialize();
+                player.Value.GameObject = null;
             }
+
+            GameData.Instance.Initialize();
 
             yield return new WaitForSeconds(2);
             yield return new WaitForEndOfFrame();
 
             GameReady = true;
-            
-            Plugin.log.LogInfo("------ Game is Ready! ------");
         }
-        
+
         public void UpdateClient()
         {
             Movement.SendPosition();
             Rotation.SendRotation();
-            
-            foreach (var player in PlayersGameObjects.Where(player => player.Value != null && player.Key != Client.Instance.Id))
-            {
-                player.Value.GetComponent<ModCharacterController>().UpdatePlayer();
-            }
 
-        }
-        public IEnumerator KeepClientAlive()
-        {
-            IsKeepingAlive = true;
-            ClientSend.KeepAlive();
-            
-            yield return new WaitForSeconds(5);
-            IsKeepingAlive = false;
-        }
-
-        public IEnumerator isServer_alive()
-        {
-            if (!Client.Instance.isConnected)
-                yield break;
-
-            if (IsServerAlive)
+            foreach (var player in Players.Where(player =>
+                         player.Value.GameObject != null && player.Key != Client.instance.Id))
             {
-                yield return new WaitForSeconds(30);
-                IsServerAlive = false;
-            }
-            else
-            {
-                yield return new WaitForSeconds(35);
-                if (IsServerAlive) yield break;
-                if (Client.Instance.isConnected) yield break;
-                
-                if (!ModSceneManager.IsInMenu())
-                    SceneManager.LoadScene(SceneNames.MainMenu);
-                
-                Client.Instance.Disconnect();
+                player.Value.GameObject.GetComponent<ModCharacterController>().UpdatePlayer();
             }
         }
-        public void SpawnPlayer(Player player)
+
+        public void SetupPlayerGameObject(Player player)
         {
             if (_playerPrefab != null)
             {
-                if (!PlayersGameObjects.ContainsKey(player.id))
-                {
-                    var playerObject = Object.Instantiate(_playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
-                    playerObject.transform.name = player.username;
-                    PlayersGameObjects[player.id] = playerObject;
-                    Plugin.log.LogInfo($"{player.username} is ingame as an object...");
-                }
+                var playerObject = Object.Instantiate(_playerPrefab, player.position.ToVector3(), player.rotation.ToQuaternion());
+                playerObject.transform.name = player.username;
+
+                player.GameObject = playerObject;
             }
             else
             {
                 PlayerPrefabSetup();
-                SpawnPlayer(player);
+                SetupPlayerGameObject(player);
             }
         }
 
 
         private static void PlayerPrefabSetup()
         {
-                var player = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            Plugin.log.LogDebug("[ClientSide/Data/ClientData/PlayerPrefabSetup]: Setting up Player Prefab...");
+            var player = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 
-                player.AddComponent<ModCharacterController>();
-                player.AddComponent<Animator>();
-                
-                player.transform.localScale = new Vector3(1, 2, 1);
-                player.transform.position = new Vector3(0, 0, 0);
-                player.transform.rotation = new Quaternion(0, 0, 0, 0);
-                    
-                _playerPrefab = player; 
-                    
-                Object.DontDestroyOnLoad(_playerPrefab);
+            player.AddComponent<Animator>();
+            player.AddComponent<ModCharacterController>();
+
+            player.transform.localScale = new Vector3(1, 1, 1);
+            player.transform.position = new Vector3(0, 0, 0);
+            player.transform.rotation = Quaternion.identity;
+
+            var goggles = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+            goggles.transform.localScale = new Vector3(0.4f, 0.1f, 0.1f); // Horizontal and narrow
+            goggles.transform.position =
+                player.transform.position + new Vector3(0, 0.9f, 0.5f); // Slightly above the center of the cylinder
+            goggles.transform.rotation = Quaternion.identity;
+
+            goggles.GetComponent<Renderer>().material.color = Color.black;
+
+            goggles.transform.SetParent(player.transform);
+
+            _playerPrefab = player;
+            Object.DontDestroyOnLoad(_playerPrefab);
+
+            Plugin.log.LogDebug("[ClientSide/Data/ClientData/PlayerPrefabSetup]: Done setting up Player Prefab.");
         }
     }
 }

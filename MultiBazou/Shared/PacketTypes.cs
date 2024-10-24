@@ -3,23 +3,25 @@ namespace MultiBazou.Shared
     public enum PacketTypes
     {
         #region Lobby and Connection
-            empty = 0,
-            welcome = 1,
-            keepAlive = 2,
-            keepAliveConfirmed = 3,
-            disconnect,
-            readyState,
-            playersInfo,
-            playerInfo,
-            startGame,
-            spawnPlayer,
+
+        Empty = 0,
+        Welcome = 1,
+        Disconnect,
+        ReadyState,
+        UpdatePlayersInDictionary,
+        UpdatePlayerInDictionary,
+        StartGame,
+        SpawnPlayer,
+
         #endregion
 
-        #region In-Game
-            playerInitialPos,
-            playerPosition,
-            playerRotation,
-            playerSceneChange,
+        #region Player Data
+
+        PlayerInitialPos,
+        PlayerPosition,
+        PlayerRotation,
+        PlayerSceneChange,
+
         #endregion
     }
 }

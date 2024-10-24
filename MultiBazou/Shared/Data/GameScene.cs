@@ -7,6 +7,6 @@ namespace MultiBazou.Shared.Data
     {
         Unknown,
         Menu,
-        Ingame
+        InGame
     }
 }

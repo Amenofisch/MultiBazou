@@ -10,15 +10,15 @@ namespace MultiBazou.ClientSide
 {
     public class Client: MonoBehaviour
     {
-        public static Client Instance;
+        public static Client instance;
         public static int dataBufferSize = 4096;
 
         public string username = "player";
         public string ip = "127.0.0.1";
         public int port;
         public int Id;
-        public ClientTcp tcp;
-        public ClientUDP udp;
+        public ClientTcp Tcp;
+        public ClientUDP UDP;
 
         public bool isConnected;
         public static bool forceDisconnected;
@@ -29,17 +29,18 @@ namespace MultiBazou.ClientSide
         
         public void Awake()
         {
-            if (Instance == null)
+            if (instance == null)
             {
-                Instance = this;
+                instance = this;
             }
-            else if (Instance != this)
+            else if (instance != this)
             {
-                Plugin.log.LogInfo( this.ToString() + " instance already exists, destroying...");
                 Destroy(this);
             }
-            tcp = new ClientTcp();
-            udp = new ClientUDP();
+            
+            Tcp = new ClientTcp();
+            UDP = new ClientUDP();
+            InitializeClientData();
         }
 
         public void ClientOnApplicationQuit()
@@ -49,22 +50,21 @@ namespace MultiBazou.ClientSide
         
         public void ConnectToServer(string ipAddress)
         {
-            InitializeClientData();
-            Instance.ip = ipAddress;
-            Instance.port = Plugin.Port;
+            instance.ip = ipAddress;
+            instance.port = Plugin.Port;
 
-            ClientData data = new ClientData();
+            var data = new ClientData();
             ClientData.instance = data;
 
             try
             {
                 isConnected = true;
-                tcp.Connect();
+                Tcp.Connect();
             }
             catch (Exception ex)
             {
                 Plugin.log.LogInfo($"Failed to connect to server. Error: {ex}");
-                Instance.Disconnect();
+                instance.Disconnect();
             }
 
             if (!isConnected)
@@ -74,49 +74,43 @@ namespace MultiBazou.ClientSide
             }
         }
 
-        private void InitializeClientData()
+        private static void InitializeClientData()
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)PacketTypes.welcome, ClientHandle.Welcome },
-                { (int)PacketTypes.keepAlive, ClientHandle.KeepAlive},
-                { (int)PacketTypes.keepAliveConfirmed, ClientHandle.KeepAliveConfirmation},
-                { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
-                { (int)PacketTypes.readyState, ClientHandle.ReadyState },
-                { (int)PacketTypes.playerInfo, ClientHandle.PlayerInfo },
-                { (int)PacketTypes.playersInfo, ClientHandle.PlayersInfo },
-                { (int)PacketTypes.startGame, ClientHandle.StartGame },
-                { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
+                { (int)PacketTypes.Welcome, ClientHandle.Welcome },
+                { (int)PacketTypes.Disconnect, ClientHandle.Disconnect },
+                { (int)PacketTypes.ReadyState, ClientHandle.ReadyState },
+                { (int)PacketTypes.UpdatePlayerInDictionary, ClientHandle.UpdatePlayerInDictionary },
+                { (int)PacketTypes.UpdatePlayersInDictionary, ClientHandle.UpdatePlayersInDictionary },
+                { (int)PacketTypes.StartGame, ClientHandle.StartGame },
+                { (int)PacketTypes.SpawnPlayer, ClientHandle.SpawnPlayer },
                 
-                { (int)PacketTypes.playerPosition, ClientHandle.PlayerPosition },
-                { (int)PacketTypes.playerInitialPos, ClientHandle.PlayerInitialPos },
-                { (int)PacketTypes.playerRotation, ClientHandle.PlayerRotation},
-                { (int)PacketTypes.playerSceneChange, ClientHandle.PlayerSceneChange},
+                { (int)PacketTypes.PlayerPosition, ClientHandle.PlayerPosition },
+                { (int)PacketTypes.PlayerInitialPos, ClientHandle.PlayerInitialPos },
+                { (int)PacketTypes.PlayerRotation, ClientHandle.PlayerRotation},
+                { (int)PacketTypes.PlayerSceneChange, ClientHandle.PlayerSceneChange},
             };
         }
         
         public void Disconnect()
         {
-            if (isConnected)
-            {
-                Application.runInBackground = false;
-                isConnected = false;
-                tcp.Disconnect();
-                udp.Disconnect();
-                
-                if(tcp.Socket != null)
-                    tcp.Socket.Close();
-                if (udp.Socket != null)
-                    udp.Socket.Close();
+            if (!isConnected) return;
+            Application.runInBackground = false;
+            isConnected = false;
+            Tcp.Disconnect();
+            UDP.Disconnect();
 
-                ClientData.instance.GameReady = false;
-                ClientData.instance = null;
-                GameData.instance = null;
+            Tcp.Socket?.Close();
+            UDP.Socket?.Close();
 
-                ModUI.Instance.window = GUIWindow.Main;
+            ClientData.instance.GameReady = false;
+            ClientData.instance = null;
+            GameData.Instance = null;
+
+            ModUI.Instance.window = GUIWindow.Main;
                 
-                Plugin.log.LogInfo("CL : Disconnected from server.");
-            }
+            Plugin.log.LogInfo("Disconnected from server.");
         }
     }
 }

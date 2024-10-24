@@ -11,9 +11,10 @@ namespace MultiBazou.Shared
         public static GameScene GetCurrentScene()
         {
             if (IsInGame())
-                return GameScene.Ingame;
+                return GameScene.InGame;
             if (IsInMenu())
                 return GameScene.Menu;
+            
             return GameScene.Unknown;
         }
 
@@ -29,7 +30,7 @@ namespace MultiBazou.Shared
                 return IsInGame();
             }
 
-            return player.scene == GameScene.Ingame;
+            return player.scene == GameScene.InGame;
         }
 
         public static bool IsInMenu()
@@ -39,9 +40,13 @@ namespace MultiBazou.Shared
         
         public static void UpdatePlayerScene()
         {
-            Plugin.log.LogInfo("Updating player scene data for " + Client.Instance.Id);
-            ClientData.instance.Players[Client.Instance.Id].scene = GetCurrentScene();
-            ClientSend.SendSceneChange(GetCurrentScene());
+            ClientData.instance.Players.TryGetValue(Client.instance.Id, out var player);
+            
+            if (player != null)
+            {
+                player.scene = GetCurrentScene();
+                ClientSend.SendSceneChange(GetCurrentScene());
+            }
         }
     }
 }

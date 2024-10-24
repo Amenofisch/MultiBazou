@@ -4,15 +4,9 @@ using MultiBazou.Shared;
 
 namespace MultiBazou.ServerSide.Transport
 {
-    public class ServerUDP
+    public class ServerUDP(int id)
     {
         public IPEndPoint EndPoint;
-        private readonly int _id;
-
-        public ServerUDP(int id)
-        {
-            _id = id;
-        }
 
         public bool IsConnected()
         {
@@ -32,15 +26,14 @@ namespace MultiBazou.ServerSide.Transport
         public void HandleData(Packet packetData)
         {
             var packetLength = packetData.ReadInt();
-            var _packetBytes = packetData.ReadBytes(packetLength);
+            var packetBytes = packetData.ReadBytes(packetLength);
 
             ThreadManager.ExecuteOnMainThread<Exception>(ex =>
             {
-                using (var packet = new Packet(_packetBytes))
-                {
-                    var packetId = packet.ReadInt();
-                    Server.packetHandlers[packetId](_id, packet);
-                }
+                using var packet = new Packet(packetBytes);
+                var packetId = packet.ReadInt();
+                
+                Server.packetHandlers[packetId](id, packet);
             }, null);
         }
 

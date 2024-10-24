@@ -7,28 +7,27 @@ using UnityEngine;
 
 namespace MultiBazou.Shared
 {
-    public static class PreferencesManager // TODO:Clean This!
+    public static class PreferencesManager
     {
         private const string ModFolderPath = @"Mods\MultiBazou\";
         private const string PreferencesFilePath = ModFolderPath + "preferences.ini";
-        private const string SaveFolderPath = ModFolderPath + "saves";
-        private const string DefaultIPAdress = "127.0.0.1";
+        private const string DefaultIPAddress = "127.0.0.1";
         private const string DefaultUsername = "player";
         
     public static void LoadPreferences()
     {
         if (File.Exists(PreferencesFilePath))
         {
-            string serializedPreferences = File.ReadAllText(PreferencesFilePath);
+            var serializedPreferences = File.ReadAllText(PreferencesFilePath);
 
             if (serializedPreferences.Length > 0)
             {
-                Preferences preferences = JsonConvert.DeserializeObject<Preferences>(serializedPreferences);
+                var preferences = JsonConvert.DeserializeObject<Preferences>(serializedPreferences);
 
                 if (preferences != null)
                 {
-                    Client.Instance.ip = preferences.IpAddress;
-                    Client.Instance.username = preferences.Username;
+                    Client.instance.ip = preferences.IpAddress;
+                    Client.instance.username = preferences.Username;
                 }
             }
 
@@ -37,20 +36,20 @@ namespace MultiBazou.Shared
         else
         {
             Plugin.log.LogInfo("No saved preferences, using default...");
-            Client.Instance.ip = DefaultIPAdress;
-            Client.Instance.username = DefaultUsername;
+            Client.instance.ip = DefaultIPAddress;
+            Client.instance.username = DefaultUsername;
         }
     }
 
     public static void SavePreferences()
     {
-        Preferences preferences = new Preferences
+        var preferences = new Preferences
         {
-            IpAddress = Client.Instance.ip,
-            Username = Client.Instance.username
+            IpAddress = Client.instance.ip,
+            Username = Client.instance.username
         };
 
-        string serializedPreferences = JsonConvert.SerializeObject(preferences);
+        var serializedPreferences = JsonConvert.SerializeObject(preferences);
         if (!Directory.Exists(ModFolderPath))
         {
             Directory.CreateDirectory(ModFolderPath);
