@@ -38,7 +38,6 @@ namespace MultiBazou.ServerSide.Transport
 
                 _stream.BeginRead(_receiveBuffer, 0, DataBufferSize, ReceiveCallback, null);
                 
-
                 ServerSend.Welcome(_id, "Welcome to the server!");
             }
 
@@ -51,10 +50,9 @@ namespace MultiBazou.ServerSide.Transport
                         _stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     // TODO: properly handle error
-                    Plugin.log.LogInfo($"Error sending data to player{_id} via TCP:{e}");
                 }
             }
 
@@ -65,7 +63,7 @@ namespace MultiBazou.ServerSide.Transport
                     var byteLength = _stream.EndRead(result);
                     if (byteLength <= 0)
                     {
-                        if (Server.clients.TryGetValue(_id, out var client))
+                        if (Server.Clients.TryGetValue(_id, out var client))
                         {
                             client.Disconnect(_id);
                         }
@@ -84,7 +82,7 @@ namespace MultiBazou.ServerSide.Transport
                     if(ex.InnerException is SocketException sockEx && sockEx.ErrorCode != 10054) {
                         Plugin.log.LogInfo($"Error receiving TCP data: {ex}"); 
                     }
-                    if (Server.clients.TryGetValue(_id, out var client))
+                    if (Server.Clients.TryGetValue(_id, out var client))
                     {
                         client.Disconnect(_id);
                     }

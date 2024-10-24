@@ -20,13 +20,10 @@ namespace MultiBazou.Shared
         private GUIStyle label_S, text_S, button_S, textField_S;
         
         private float buttonHeight = 20f;
-        private float maxScrollViewHeight = 121f; 
         private Vector2 scrollPosition = Vector2.zero;
         
         private Rect mRect = new Rect(Screen.width / 2.5f, Screen.height / 3.5f, 315, 280);
         
-        private string saveName = "save";
-        private int saveIndex;
         public void Awake()
         {
             if (Instance == null)
@@ -105,7 +102,7 @@ namespace MultiBazou.Shared
         private void RenderMain()
         {
             GUILayout.BeginArea(mRect, GUI.skin.box);
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
@@ -118,7 +115,7 @@ namespace MultiBazou.Shared
             GUILayout.FlexibleSpace();
 
             GUILayout.Label("Username:", text_S);
-            Client.Instance.username = GUILayout.TextField(Client.Instance.username, textField_S, GUILayout.Width(190));
+            Client.instance.username = GUILayout.TextField(Client.instance.username, textField_S, GUILayout.Width(190));
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -127,7 +124,7 @@ namespace MultiBazou.Shared
             GUILayout.FlexibleSpace();
     
             GUILayout.Label("IP Address:", text_S);
-            Client.Instance.ip = GUILayout.TextField(Client.Instance.ip, textField_S, GUILayout.Width(190));
+            Client.instance.ip = GUILayout.TextField(Client.instance.ip, textField_S, GUILayout.Width(190));
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -260,7 +257,7 @@ namespace MultiBazou.Shared
                 Player player =  ClientData.instance.Players[i];
                 if (player != null)
                 {
-                    if (player.id == Client.Instance.Id)
+                    if (player.id == Client.instance.Id)
                     {
                         if (GUILayout.Button("Ready", button_S)) 
                         {
@@ -268,12 +265,12 @@ namespace MultiBazou.Shared
                             ClientSend.SendReadyState(player.isReady, i);
                         }
                     }
-                    if (Client.Instance.Id == 1 && player.id != 1) 
+                    if (Client.instance.Id == 1 && player.id != 1) 
                     {  
                         if (GUILayout.Button("Kick", button_S)) 
                         {
                             ServerSend.DisconnectClient(player.id, "You've been kicked from server!");
-                            Server.clients[player.id].Disconnect(player.id);
+                            Server.Clients[player.id].Disconnect(player.id);
                         }
                     }
                 }
@@ -313,7 +310,7 @@ namespace MultiBazou.Shared
                 if(GUILayout.Button("Disconnect", button_S, GUILayout.Width(100), GUILayout.Height(35)))
                 {
                     window = GUIWindow.Main;
-                    Client.Instance.Disconnect();
+                    Client.instance.Disconnect();
                 }
             }
             
@@ -330,22 +327,11 @@ namespace MultiBazou.Shared
         
         private void JoinLobby()
         {
-            if (!string.IsNullOrEmpty(Client.Instance.username) && !string.IsNullOrEmpty(Client.Instance.ip))
+            if (!string.IsNullOrEmpty(Client.instance.username) && !string.IsNullOrEmpty(Client.instance.ip))
             {
-                Client.Instance.ConnectToServer(Client.Instance.ip);
+                Client.instance.ConnectToServer(Client.instance.ip);
                 window = GUIWindow.Lobby;
                 Application.runInBackground = true;
-            }
-        }
-
-        public void ShowUI()
-        {
-            if (Input.GetKeyDown(Plugin.instance.ConfigModUiToggle.Value))
-            {
-                if(ModSceneManager.GetCurrentScene() == GameScene.Unknown)
-                    return;
-                
-                showModUI = !showModUI;
             }
         }
     }

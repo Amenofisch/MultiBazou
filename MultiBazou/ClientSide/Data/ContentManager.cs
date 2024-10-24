@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MultiBazou.ClientSide.Data
 {
@@ -18,7 +16,6 @@ namespace MultiBazou.ClientSide.Data
             }
             else if (instance != this)
             {
-                Plugin.log.LogInfo("Instance already exists, destroying object!");
                 Destroy(this);
             }
             

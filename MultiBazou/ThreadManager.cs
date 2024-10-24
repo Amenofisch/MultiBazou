@@ -1,64 +1,58 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace MultiBazou
 {
-    public class ThreadManager
+    public static class ThreadManager
     {
-        private static readonly List<Action> executeOnMainThread = new List<Action>();
-        private static readonly List<Action> executeCopiedOnMainThread = new List<Action>();
-        private static bool actionToExecuteOnMainThread = false;
-
-        public static void UpdateThread()
-        {
-            UpdateMain();
-        }
+        private static readonly List<Action> ToBeExecutedOnMainThread = new();
+        private static readonly List<Action> ExecuteCopiedOnMainThread = new();
+        private static bool _actionToExecuteOnMainThread;
 
         /// <summary>Sets an action to be executed on the main thread.</summary>
-        /// <param name="_action">The action to be executed on the main thread.</param>
-        public static void ExecuteOnMainThread<T>(Action<T> _action, T exception)
+        /// <param name="action">The action to be executed on the main thread.</param>
+        /// <param name="exception"></param>
+        public static void ExecuteOnMainThread<T>(Action<T> action, T exception)
         {
-            if (_action == null)
+            if (action == null)
             {
-                Debug.Log("No action was given to execute on the main thread!");
+                Plugin.log.LogError("No action was given to execute on the main thread!");
                 return;
             }
 
-            lock (executeOnMainThread)
+            lock (ToBeExecutedOnMainThread)
             {
-                executeOnMainThread.Add(() =>
+                ToBeExecutedOnMainThread.Add(() =>
                 {
                     try
                     {
-                        _action(exception);
+                        action(exception);
                     }
                     catch (Exception e)
                     {
-                        Debug.Log("Exception occured on MainThread: " + e);
+                        Plugin.log.LogError("Exception occured on MainThread: " + e);
                     }
                 });
-                actionToExecuteOnMainThread = true;
+                _actionToExecuteOnMainThread = true;
             }
         }
 
         /// <summary>Executes all code meant to run on the main thread. NOTE: Call this ONLY from the main thread.</summary>
-        public static void UpdateMain()
+        public static void UpdateThread()
         {
-            if (actionToExecuteOnMainThread)
+            if (!_actionToExecuteOnMainThread) return;
+            
+            ExecuteCopiedOnMainThread.Clear();
+            lock (ToBeExecutedOnMainThread)
             {
-                executeCopiedOnMainThread.Clear();
-                lock (executeOnMainThread)
-                {
-                    executeCopiedOnMainThread.AddRange(executeOnMainThread);
-                    executeOnMainThread.Clear();
-                    actionToExecuteOnMainThread = false;
-                }
+                ExecuteCopiedOnMainThread.AddRange(ToBeExecutedOnMainThread);
+                ToBeExecutedOnMainThread.Clear();
+                _actionToExecuteOnMainThread = false;
+            }
 
-                for (int i = 0; i < executeCopiedOnMainThread.Count; i++)
-                {
-                    executeCopiedOnMainThread[i]();
-                }
+            foreach (var t in ExecuteCopiedOnMainThread)
+            {
+                t();
             }
         }
     }

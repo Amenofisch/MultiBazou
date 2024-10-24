@@ -12,14 +12,14 @@ using UnityEngine;
 
 namespace MultiBazou.ServerSide
 {
-     public class Server
+    public class Server
     {
         private static int MaxPlayers { get; set; }
         private static int Port { get; set; }
-        public static readonly Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
+        public static readonly Dictionary<int, ServerClient> Clients = new Dictionary<int, ServerClient>();
 
         public delegate void PacketHandler(int fromClient, Packet packet);
-        public static readonly Dictionary<int, DateTime> lastClientActivity = new Dictionary<int, DateTime>();
+
         public static Dictionary<int, PacketHandler> packetHandlers;
 
         private static TcpListener _tcpListener;
@@ -41,142 +41,116 @@ namespace MultiBazou.ServerSide
             _udpListener = new UdpClient(Port);
             _udpListener.BeginReceive(UDPReceiveCallback, null);
 
-            Plugin.log.LogInfo($"Server started successfully !");
+            Plugin.log.LogInfo("Server started successfully!");
             ServerData.isRunning = true;
             _isStopping = false;
-            
+
             Application.runInBackground = true;
-            
-            Client.Instance.ConnectToServer("127.0.0.1");
 
-            // TODO: use coroutine
-            // IDEA: this is basically useless tbh, why should we disconnect the client for being inactive???
-           CheckForInactiveClientsRoutine();
-        }
-
-        private static void CheckForInactiveClients()
-        {
-            const int maxInactivityDelay = 60;
-            foreach (
-                    var clientId 
-                     in from 
-                         entry 
-                         in 
-                         lastClientActivity 
-                     let clientId = entry.Key 
-                     let lastActivity = entry.Value 
-                     where (DateTime.Now - lastActivity).TotalSeconds > maxInactivityDelay 
-                     select clientId
-                )
-            {
-                ServerSend.DisconnectClient(clientId, "Client Inactive for too long...");
-                clients.Remove(clientId);
-                lastClientActivity.Remove(clientId);
-            }
-        }
-
-
-        private static IEnumerator CheckForInactiveClientsRoutine()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(10);
-                CheckForInactiveClients();
-            }
+            Client.instance.ConnectToServer("127.0.0.1");
         }
 
         public static void Stop()
         {
-            if(!ServerData.isRunning) return;
-            
+            if (!ServerData.isRunning) return;
+
             Application.runInBackground = false;
-            foreach (int id in Server.clients.Keys)
+            foreach (var id in Server.Clients.Keys)
             {
                 ServerSend.DisconnectClient(id, "Server is shutting down.");
             }
-            
+
             ServerData.ResetData();
             _isStopping = true;
 
             _udpListener?.Close();
             _tcpListener?.Stop();
 
-            clients?.Clear();
+            Clients?.Clear();
             packetHandlers?.Clear();
 
             ModUI.Instance.window = GUIWindow.Main;
             Plugin.log.LogInfo("Server Closed.");
-
         }
 
         private static void TcpConnectCallback(IAsyncResult result)
         {
-            if(_isStopping)
+            if (_isStopping)
                 return;
-            
+
+            // this is needed so the server keeps listening for new clients,
+            // as otherwise when a user joins it wouldn't accept any new clients.
             var client = _tcpListener.EndAcceptTcpClient(result);
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
-           foreach (var clientID in clients.Keys.Where(clientID => clients[clientID].tcp.Socket == null))
-           {
-               clients[clientID].tcp.Connect(client);
-               return;
-           }
-
-           Plugin.log.LogInfo($"{client.Client.RemoteEndPoint} failed to connect: Server full!");
-        }
-        
-        private static void UDPReceiveCallback(IAsyncResult result)
-        {
-                if(_isStopping)
-                    return;
+            foreach (var clientID in Clients.Keys.Where(clientID => Clients[clientID].ServerTcp.Socket == null))
+            {
                 try
                 {
-                    var receivedIP = new IPEndPoint(IPAddress.Any, 0);
-                    var data = _udpListener.EndReceive(result, ref receivedIP);
-                    _udpListener.BeginReceive(UDPReceiveCallback, null);
-                    
-                    if (data.Length < 4)
-                        return;
-                    
-
-                    using (var packet = new Packet(data))
-                    {
-                        var clientId = packet.ReadInt();
-                        if (clientId == 0)
-                            return;
-                        
-                        if (clients[clientId].udp.EndPoint == null)
-                        {
-                            clients[clientId].udp.Connect(receivedIP);
-                            return;
-                        }
-                        
-                        
-                        if (clients[clientId].udp.EndPoint.ToString() == receivedIP.ToString())
-                        {
-                            clients[clientId].udp.HandleData(packet);
-                        }
-                    }
+                    Clients[clientID].ServerTcp.Connect(client);
                 }
                 catch (Exception ex)
                 {
-                    Plugin.log.LogInfo($"Error receiving UDP data: {ex}");
+                    Plugin.log.LogError("SV: TCP Connect Failed: " + ex.Message);
+                }
+
+                return;
+            }
+
+            Plugin.log.LogInfo($"{client.Client.RemoteEndPoint} failed to connect: Server full!");
+        }
+
+        private static void UDPReceiveCallback(IAsyncResult result)
+        {
+            if (_isStopping)
+                return;
+            try
+            {
+                var receivedIP = new IPEndPoint(IPAddress.Any, 0);
+                var data = _udpListener.EndReceive(result, ref receivedIP);
+                _udpListener.BeginReceive(UDPReceiveCallback, null);
+
+                if (data.Length < 4)
+                    return;
+
+
+                using (var packet = new Packet(data))
+                {
+                    var clientId = packet.ReadInt();
+                    if (clientId == 0)
+                        return;
+
+                    if (Clients[clientId].ServerUdp.EndPoint == null)
+                    {
+                        Clients[clientId].ServerUdp.Connect(receivedIP);
+                        return;
+                    }
+
+
+                    if (Clients[clientId].ServerUdp.EndPoint.ToString() == receivedIP.ToString())
+                    {
+                        Clients[clientId].ServerUdp.HandleData(packet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: properly handle error
             }
         }
 
-        public static void SendUDPData(IPEndPoint _clientEndPoint, Packet _packet)
+        public static void SendUDPData(IPEndPoint clientEndPoint, Packet packet)
         {
             try
             {
-                if (_clientEndPoint != null)
+                if (clientEndPoint != null)
                 {
-                    _udpListener.BeginSend(_packet.ToArray(), _packet.Length(), _clientEndPoint, null, null);
+                    _udpListener.BeginSend(packet.ToArray(), packet.Length(), clientEndPoint, null, null);
                 }
             }
-            catch (Exception _ex)
+            catch (Exception ex)
             {
-                Plugin.log.LogInfo($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
+                // TODO: properly handle error
             }
         }
 
@@ -184,23 +158,21 @@ namespace MultiBazou.ServerSide
         {
             for (int i = 1; i <= MaxPlayers; i++)
             {
-                clients.Add(i, new ServerClient(i));
+                Clients.Add(i, new ServerClient(i));
             }
 
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                {(int)PacketTypes.empty, ServerHandle.Empty},
-                {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
-                {(int)PacketTypes.readyState, ServerHandle.ReadyState},
-                {(int)PacketTypes.keepAlive, ServerHandle.KeepAlive},
-                {(int)PacketTypes.disconnect, ServerHandle.Disconnect},
-                
-                {(int)PacketTypes.playerPosition, ServerHandle.PlayerPosition},
-                {(int)PacketTypes.playerInitialPos, ServerHandle.PlayerInitialPosition},
-                {(int)PacketTypes.playerRotation, ServerHandle.PlayerRotation},
-                {(int)PacketTypes.playerSceneChange, ServerHandle.PlayerSceneChange},
+                { (int)PacketTypes.Empty, ServerHandle.Empty },
+                { (int)PacketTypes.Welcome, ServerHandle.WelcomeReceived },
+                { (int)PacketTypes.ReadyState, ServerHandle.ReadyState },
+                { (int)PacketTypes.Disconnect, ServerHandle.Disconnect },
+
+                { (int)PacketTypes.PlayerPosition, ServerHandle.PlayerPosition },
+                { (int)PacketTypes.PlayerInitialPos, ServerHandle.PlayerInitialPosition },
+                { (int)PacketTypes.PlayerRotation, ServerHandle.PlayerRotation },
+                { (int)PacketTypes.PlayerSceneChange, ServerHandle.PlayerSceneChange },
             };
-            Plugin.log.LogInfo("Initialized Packets!");
         }
     }
 }

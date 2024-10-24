@@ -24,7 +24,7 @@ namespace MultiBazou.ClientSide.Transport
 
                 _receiveBuffer = new byte[Client.dataBufferSize];
 
-                Socket.BeginConnect(Client.Instance.ip, Client.Instance.port, ConnectCallback, Socket);
+                Socket.BeginConnect(Client.instance.ip, Client.instance.port, ConnectCallback, Socket);
             }
             catch (Exception ex)
             {
@@ -40,12 +40,8 @@ namespace MultiBazou.ClientSide.Transport
 
                 if (!Socket.Connected)
                 {
-                    Plugin.log.LogInfo("Cannot Connect to Server!");
                     return;
                 }
-                
-                _stream = Socket.GetStream();
-                _receivedData = new Packet();
                 
                 _stream = Socket.GetStream();
                 _receivedData = new Packet();
@@ -111,8 +107,6 @@ namespace MultiBazou.ClientSide.Transport
                         {
                             Client.packetHandlers[packetId](packet);
                         }
-                        else
-                            Plugin.log.LogInfo("packet is Invalid !!!"); // TODO: properly handle error
                     }
                 },  null);
                 

@@ -32,11 +32,11 @@ namespace MultiBazou.ServerSide.Transport
         public void HandleData(Packet packetData)
         {
             var packetLength = packetData.ReadInt();
-            var _packetBytes = packetData.ReadBytes(packetLength);
+            var packetBytes = packetData.ReadBytes(packetLength);
 
             ThreadManager.ExecuteOnMainThread<Exception>(ex =>
             {
-                using (var packet = new Packet(_packetBytes))
+                using (var packet = new Packet(packetBytes))
                 {
                     var packetId = packet.ReadInt();
                     Server.packetHandlers[packetId](_id, packet);

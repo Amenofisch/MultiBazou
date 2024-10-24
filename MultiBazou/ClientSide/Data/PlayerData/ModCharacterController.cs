@@ -5,10 +5,10 @@ namespace MultiBazou.ClientSide.Data.PlayerData
 {
     public class ModCharacterController : MonoBehaviour
     {
-        public float moveSpeed = 36f;
-        public float acceleration = 50f;
-        public float deceleration = 50f;
-        public float arrivalThreshold = 0.1f;
+        public float moveSpeed = 50f;
+        public float acceleration = 25f;
+        public float deceleration = 35f;
+        public float arrivalThreshold = 0.02f;
 
         private Vector3 _velocity = Vector3.zero;
         private Vector3 _targetVelocity = Vector3.zero;
@@ -16,7 +16,6 @@ namespace MultiBazou.ClientSide.Data.PlayerData
         private bool _isMovingToTarget;
         
         private Quaternion _targetRotation;
-        private bool _isRotationLocked;
         
         private Animator _animator;
 
@@ -29,8 +28,8 @@ namespace MultiBazou.ClientSide.Data.PlayerData
         {
             if (_isMovingToTarget)
             {
-                Vector3 directionToTarget = (_targetPosition - transform.position).normalized;
-                float distanceToTarget = Vector3.Distance(transform.position, _targetPosition);
+                var directionToTarget = (_targetPosition - transform.position).normalized;
+                var distanceToTarget = Vector3.Distance(transform.position, _targetPosition);
 
                 if (distanceToTarget <= arrivalThreshold)
                 {
@@ -43,17 +42,13 @@ namespace MultiBazou.ClientSide.Data.PlayerData
                 _targetVelocity = directionToTarget * moveSpeed;
             }
 
-            _velocity = Vector3.Lerp(_velocity, _targetVelocity, (_targetVelocity.magnitude > 0.1f) ? acceleration * Time.deltaTime : deceleration * Time.deltaTime);
+            _velocity = Vector3.Lerp(_velocity, _targetVelocity, _targetVelocity.magnitude > 0.1f ? acceleration * Time.deltaTime : deceleration * Time.deltaTime);
 
             transform.position = Vector3.Lerp(transform.position, transform.position + _velocity * Time.deltaTime, Time.deltaTime * 10f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, _targetRotation, Time.deltaTime * 10f);
             
-            if (_isRotationLocked)
-            {
-                transform.rotation = Quaternion.Lerp(transform.rotation, _targetRotation, Time.deltaTime * 10f);
-            }
-            
-            float verticalSpeed = Vector3.Dot(transform.forward, _velocity);
-            float horizontalSpeed = Vector3.Dot(transform.right, _velocity);
+            var verticalSpeed = Vector3.Dot(transform.forward, _velocity);
+            var horizontalSpeed = Vector3.Dot(transform.right, _velocity);
 
             _animator.SetFloat("Vertical", Mathf.Lerp(_animator.GetFloat("Vertical"), verticalSpeed, Time.deltaTime * 10f));
             _animator.SetFloat("Horizontal", Mathf.Lerp(_animator.GetFloat("Horizontal"), horizontalSpeed, Time.deltaTime * 10f));
@@ -64,10 +59,15 @@ namespace MultiBazou.ClientSide.Data.PlayerData
             _targetPosition = position;
             _isMovingToTarget = true;
         }
+        
         public void RotateToRotation( Quaternion rotation)
         {
             _targetRotation = rotation;
-            _isRotationLocked = true;
+        }
+
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
         }
     }
 }

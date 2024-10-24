@@ -9,7 +9,6 @@ namespace MultiBazou.Shared
         {
             Application.runInBackground = true;
             Singleton<MainMenu_Manager>.i.StartGame();
-            Plugin.log.LogInfo("Starting game...");
         }
     }
 }

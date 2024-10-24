@@ -10,43 +10,34 @@ namespace MultiBazou.ClientSide.Handle
         private static void SendTcpData(Packet packet)
         {
             packet.WriteLength();
-            Client.Instance.tcp.SendData(packet);
+            Client.instance.Tcp.SendData(packet);
         }
         
         private static void SendUdpData(Packet packet)
         {
             packet.WriteLength();
-            Client.Instance.udp.SendData(packet);
+            Client.instance.UDP.SendData(packet);
         }
         
         #region Lobby and connection
         
         public static void WelcomeReceived()
         {
-            using (var packet = new Packet((int)PacketTypes.welcome))
+            using (var packet = new Packet((int)PacketTypes.Welcome))
             {
-                packet.Write(Client.Instance.Id);
-                packet.Write(Client.Instance.username);
+                packet.Write(Client.instance.Id);
+                packet.Write(Client.instance.username);
                 packet.Write(PluginInfo.Version);
                 packet.Write(ContentManager.instance.GameVersion);
                     
                 SendTcpData(packet);
             }
-            Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.Socket.Client.LocalEndPoint).Port);
-            KeepAlive();
-        }
-            
-        public static void KeepAlive()
-        {
-            using (var packet = new Packet((int)PacketTypes.keepAlive))
-            {
-                SendTcpData(packet);
-            }
+            Client.instance.UDP.Connect(((IPEndPoint)Client.instance.Tcp.Socket.Client.LocalEndPoint).Port);
         }
 
         public static void SendReadyState(bool b, int number)
         {
-            using (var packet = new Packet((int)PacketTypes.readyState))
+            using (var packet = new Packet((int)PacketTypes.ReadyState))
             {
                 packet.Write(b);
                 packet.Write(number);
@@ -57,7 +48,7 @@ namespace MultiBazou.ClientSide.Handle
             
         public static void Disconnect(int id)
         {
-            using (var packet = new Packet((int)PacketTypes.disconnect))
+            using (var packet = new Packet((int)PacketTypes.Disconnect))
             {
                 packet.Write(id);
                     
@@ -71,40 +62,30 @@ namespace MultiBazou.ClientSide.Handle
         
             public static void SendInitialPosition(Vector3Serializable position)
             {
-                using (var packet = new Packet((int)PacketTypes.playerInitialPos))
-                {
-                    packet.Write(position);
-                        
-                    SendUdpData(packet);
-                }
+                using var packet = new Packet((int)PacketTypes.PlayerInitialPos);
+                packet.Write(position);
+                SendUdpData(packet);
             }
+            
             public static void SendPosition(Vector3Serializable position)
             {
-                using (var packet = new Packet((int)PacketTypes.playerPosition))
-                {
-                    packet.Write(position);
-                    
-                    SendUdpData(packet);
-                }
+                using var packet = new Packet((int)PacketTypes.PlayerPosition);
+                packet.Write(position);
+                SendUdpData(packet);
             }
+            
             public static void SendRotation(QuaternionSerializable rotation)
             {
-                using (var packet = new Packet((int)PacketTypes.playerRotation))
-                {
-                    packet.Write(rotation);
-                    
-                    SendUdpData(packet);
-                }
+                using var packet = new Packet((int)PacketTypes.PlayerRotation);
+                packet.Write(rotation);
+                SendUdpData(packet);
             }
             
             public static void SendSceneChange(GameScene scene)
             {
-                using (var packet = new Packet((int)PacketTypes.playerSceneChange))
-                {
-                    packet.Write(scene);
-
-                    SendTcpData(packet);
-                }
+                using var packet = new Packet((int)PacketTypes.PlayerSceneChange);
+                packet.Write(scene);
+                SendTcpData(packet);
             }
             
         #endregion

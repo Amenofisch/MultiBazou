@@ -2,8 +2,8 @@
 {
     public static class SceneNames
     {
-        public static string MainMenu = "MainMenu";
-        public static string Master = "Master";
-        public static string SplashScreen = "SplashScreen";
+        public const string MainMenu = "MainMenu";
+        public const string Master = "Master";
+        public const string SplashScreen = "SplashScreen";
     }
 }

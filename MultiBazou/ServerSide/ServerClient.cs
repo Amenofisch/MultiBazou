@@ -9,42 +9,40 @@ namespace MultiBazou.ServerSide
 {
     public class ServerClient
     {
-        public int id;
-        public bool isHosting = false;
+        public int ID;
+        public bool IsHosting = false;
         public bool Alive = true;
         
-        public ServerTcp tcp;
-        public ServerUDP udp;
+        public ServerTcp ServerTcp;
+        public ServerUDP ServerUdp;
 
-        public ServerClient(int _clientId)
+        public ServerClient(int clientId)
         {
-            id = _clientId;
-            tcp = new ServerTcp(id);
-            udp = new ServerUDP(id);
+            ID = clientId;
+            ServerTcp = new ServerTcp(ID);
+            ServerUdp = new ServerUDP(ID);
         }
 
 
-        public void SendToLobby(string _playerName)
+        public void UpdatePlayerDictionary(string playerName)
         {
-            ServerData.Players[id] = new Player(id, _playerName, new Vector3(0, 0, 0));
-            Plugin.log.LogInfo($"SV: New player ! {_playerName}, ID:{id}");
-            
-            ServerSend.SendPlayersInfo(ServerData.Players);
+            ServerData.Players[ID] = new Player(ID, playerName, new Vector3(0, 0, 0));
+            ServerSend.SendPlayersUpdateInDictionary(ServerData.Players);
         }
 
-        public void Disconnect(int _id)
+        public void Disconnect(int id)
         {
-            Plugin.log.LogInfo($"{tcp.Socket.Client.RemoteEndPoint} has disconnected.");
-            if (ServerData.Players.TryGetValue(_id, out var player))
-                ServerSend.DisconnectClient(_id, $"{ player.username} as disconnected!");
-            if (Server.clients.ContainsKey(_id))
-                Server.clients.Remove(_id);
+            Plugin.log.LogInfo($"{ServerTcp.Socket.Client.RemoteEndPoint} has disconnected.");
+            if (ServerData.Players.TryGetValue(id, out var player))
+                ServerSend.DisconnectClient(id, $"{player.username} has disconnected!");
+            if (Server.Clients.ContainsKey(id))
+                Server.Clients.Remove(id);
             
-            if(ServerData.Players.ContainsKey(_id))
-                ServerData.Players.Remove(_id);
+            if(ServerData.Players.ContainsKey(id))
+                ServerData.Players.Remove(id);
             
-            tcp.Disconnect();
-            udp.Disconnect();
+            ServerTcp.Disconnect();
+            ServerUdp.Disconnect();
         }
     }
 }
